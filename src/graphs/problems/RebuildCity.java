@@ -23,46 +23,51 @@ import java.util.*;
 * */
 
 public class RebuildCity {
+    public void rebuild (int cities, int roads, int cost_library, int cost_road) {
+        Scanner in = new Scanner(System.in);
+        HashMap<Integer,ArrayList<Integer>> hm = new HashMap<>();
+        for(int i = 1; i <= cities; i++){
+            ArrayList<Integer> list = new ArrayList<>();
+            list.add(i);
+            hm.put(i, list);
+        }
+
+        for(int a1 = 0; a1 < roads; a1++){
+            int city_1 = in.nextInt();
+            int city_2 = in.nextInt();
+            ArrayList<Integer> list1 = hm.get(city_1);
+            ArrayList<Integer> list2 = hm.get(city_2);
+            if(list1 != list2){
+                list1.addAll(list2);
+                for (Integer integer : list2)
+                    hm.put((int) integer, list1);
+            }
+        }
+        long cost = 0;
+        if(cost_library <= cost_road)
+            cost = (long) cities * cost_library;
+        else{
+            for(ArrayList<Integer> list:hm.values()){
+                int size = list.size();
+                if(size>0){
+                    cost += cost_library;
+                    cost += (size-1) * cost_road;
+                    list.clear();
+                }
+            }
+        }
+        System.out.println(cost);
+    }
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        RebuildCity obj = new RebuildCity();
         int q = in.nextInt();
         for(int a0 = 0; a0 < q; a0++){
             int n = in.nextInt();
             int m = in.nextInt();
             int x = in.nextInt();
             int y = in.nextInt();
-            HashMap<Integer,ArrayList<Integer>> hm = new HashMap<>();
-            for(int i=1;i<=n;i++){
-                ArrayList<Integer> list = new ArrayList<>();
-                list.add(i);
-                hm.put(i, list);
-            }
-
-            for(int a1 = 0; a1 < m; a1++){
-                int city_1 = in.nextInt();
-                int city_2 = in.nextInt();
-                ArrayList<Integer> list1 = hm.get(city_1);
-                ArrayList<Integer> list2 = hm.get(city_2);
-                if(list1 != list2){
-                    list1.addAll(list2);
-                    for (Integer integer : list2)
-                        hm.put((int) integer, list1);
-                }
-            }
-            long cost = 0;
-            if(x<=y)
-                cost = (long) n*x;
-            else{
-                for(ArrayList<Integer> list:hm.values()){
-                    int size = list.size();
-                    if(size>0){
-                        cost += x;
-                        cost += (size-1)*y;
-                        list.clear();
-                    }
-                }
-            }
-            System.out.println(cost);
+            obj.rebuild(n, m, x, y);
         }
     }
 }
